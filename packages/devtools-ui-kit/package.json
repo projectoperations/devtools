@@ -40,7 +40,7 @@
   "dependencies": {
     "@iconify-json/carbon": "^1.1.23",
     "@iconify-json/logos": "^1.1.40",
-    "@iconify-json/ri": "^1.1.14",
+    "@iconify-json/ri": "^1.1.15",
     "@iconify-json/tabler": "^1.1.100",
     "@nuxt/devtools-kit": "workspace:*",
     "@nuxt/kit": "^3.8.2",

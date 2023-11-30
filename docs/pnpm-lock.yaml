@@ -18,11 +18,11 @@ importers:
         specifier: ^2.9.0
         version: 2.9.0(nuxt@3.8.2)(vue@3.3.8)
       '@nuxt/devtools':
-        specifier: 1.0.3
-        version: 1.0.3(nuxt@3.8.2)(vite@4.5.0)
+        specifier: 1.0.4
+        version: 1.0.4(nuxt@3.8.2)(vite@4.5.0)
       '@nuxt/image':
-        specifier: 1.0.0
-        version: 1.0.0
+        specifier: 1.1.0
+        version: 1.1.0
       '@nuxt/ui-pro':
         specifier: ^0.5.0
         version: 0.5.0(nuxt@3.8.2)(vite@4.5.0)(vue@3.3.8)
@@ -1233,8 +1233,24 @@ packages:
       - supports-color
     dev: false
 
-  /@nuxt/devtools-wizard@1.0.3:
-    resolution: {integrity: sha512-iningPOhBVMYov+7hDX5yr1tAVVA6AmJ7EgRkNfmHqPX2rerhD4eIN7Ao4KwkjGmQJ7qdM7k8w+NiL8OQOpdFQ==}
+  /@nuxt/devtools-kit@1.0.4(nuxt@3.8.2)(vite@4.5.0):
+    resolution: {integrity: sha512-AXNeI1dBilNryCmwuTd3lU7CrPBhzUJ5ntTFiXw9MmFwe5QT3NOxDFOv0gX7z1DFnmBEmx5mPKWysCwh7htEnQ==}
+    peerDependencies:
+      nuxt: ^3.8.1
+      vite: '*'
+    dependencies:
+      '@nuxt/kit': 3.8.2
+      '@nuxt/schema': 3.8.2
+      execa: 7.2.0
+      nuxt: 3.8.2(vite@4.5.0)
+      vite: 4.5.0
+    transitivePeerDependencies:
+      - rollup
+      - supports-color
+    dev: false
+
+  /@nuxt/devtools-wizard@1.0.4:
+    resolution: {integrity: sha512-3QHRfmkiITM67lAzSIOiI6N4Qzi5i705TCQ53pHQbce0+E00f5vck2hPauflN2X0/M3SZdkUV8UayaHc4egmdA==}
     hasBin: true
     dependencies:
       consola: 3.2.3
@@ -1249,16 +1265,16 @@ packages:
       semver: 7.5.4
     dev: false
 
-  /@nuxt/devtools@1.0.3(nuxt@3.8.2)(vite@4.5.0):
-    resolution: {integrity: sha512-2mXvQiS3KTMF0fO80Y9WLx95yubRoIp2wSCarmhhqInPe8/0K9VZ4TUiTGF20ti45h0ky3OAxiVSmLfViwDWjg==}
+  /@nuxt/devtools@1.0.4(nuxt@3.8.2)(vite@4.5.0):
+    resolution: {integrity: sha512-G1Oo9+TaOYzePIXpNX+Zzalw/rJyIZKZpZmXfzolPlOJSA1i0JKzZX6Z7iQHdqPwNJ8t+HnVaF4PghPIpo1kwg==}
     hasBin: true
     peerDependencies:
       nuxt: ^3.8.1
       vite: '*'
     dependencies:
       '@antfu/utils': 0.7.6
-      '@nuxt/devtools-kit': 1.0.3(nuxt@3.8.2)(vite@4.5.0)
-      '@nuxt/devtools-wizard': 1.0.3
+      '@nuxt/devtools-kit': 1.0.4(nuxt@3.8.2)(vite@4.5.0)
+      '@nuxt/devtools-wizard': 1.0.4
       '@nuxt/kit': 3.8.2
       birpc: 0.2.14
       consola: 3.2.3
@@ -1317,8 +1333,8 @@ packages:
       - xml2js
     dev: false
 
-  /@nuxt/image@1.0.0:
-    resolution: {integrity: sha512-tiNyerofmMs5JKW5erSoHNE6opsftdORWvANkqLissTiQFwGJxmfskjcJo/hJDCy/LT0VurW8wcuK/2wB3JX3Q==}
+  /@nuxt/image@1.1.0:
+    resolution: {integrity: sha512-+zZqsjVfR83UOrChGeaYuWZeLYMkFD0gNY0T6L4W1y4YaRbKNN5iynZJ71Bmg7lcOPRbf5OmSPBTSU0ieYJq4w==}
     engines: {node: ^14.16.0 || >=16.11.0}
     dependencies:
       '@nuxt/kit': 3.8.2
@@ -7087,7 +7103,7 @@ packages:
         optional: true
     dependencies:
       '@nuxt/devalue': 2.0.2
-      '@nuxt/devtools': 1.0.3(nuxt@3.8.2)(vite@4.5.0)
+      '@nuxt/devtools': 1.0.4(nuxt@3.8.2)(vite@4.5.0)
       '@nuxt/kit': 3.8.2
       '@nuxt/schema': 3.8.2
       '@nuxt/telemetry': 2.5.2
