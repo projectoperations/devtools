@@ -4,6 +4,8 @@
   ],
   "baseBranches": [
     "main"
+    "developer"
+    "releases"
   ],
   "packageRules": [
     {
