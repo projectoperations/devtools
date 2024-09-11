@@ -1,5 +1,5 @@
-import type { Ref } from 'vue'
 import { objectPick } from '@antfu/utils'
+import type { Ref } from 'vue'
 import type { HookInfo, RouteInfo } from '../../src/types'
 
 export function useServerPages() {
@@ -8,6 +8,10 @@ export function useServerPages() {
 
 export function useServerRoutes() {
   return useAsyncState('getServerRoutes', () => rpc.getServerRoutes())
+}
+
+export function useServerTasks() {
+  return useAsyncState('getServerTasks', () => rpc.getServerTasks())
 }
 
 export function useServerHooks() {

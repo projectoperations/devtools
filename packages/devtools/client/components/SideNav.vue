@@ -83,7 +83,7 @@ onClickOutside(
         >
           <div i-logos-nuxt-icon h-6 w-6 />
           <template v-if="sidebarExpanded">
-            <span text="lg white" font-600>
+            <span text="lg black dark:white" font-600>
               DevTools
             </span>
             <div flex-auto />
@@ -97,8 +97,9 @@ onClickOutside(
     </div>
 
     <div
-      flex="~ auto col gap-0.5 items-center" w-full p1 class="no-scrollbar"
-      :class="sidebarExpanded ? '' : 'of-x-hidden of-y-auto'"
+      flex="~ auto col gap-0.5 items-center" w-full p1
+      class="no-scrollbar"
+      :class="{ 'of-x-hidden of-y-auto': sidebarExpanded || sidebarScrollable }"
     >
       <template v-for="[name, tabs], idx of displayedTabs" :key="name">
         <template v-if="tabs.length">

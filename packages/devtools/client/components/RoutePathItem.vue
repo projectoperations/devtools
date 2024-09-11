@@ -12,13 +12,14 @@ const emit = defineEmits<{
 const partsInput = ref<string[]>([])
 const parts = computed(() => {
   const _ = parseExpressRoute(props.route.path)
+  // eslint-disable-next-line vue/no-side-effects-in-computed-properties
   partsInput.value = Array.from({ length: _.length }, () => '')
   return _
 })
 
 function parseExpressRoute(route: string) {
   return route
-    .split(/(:\w+[\?\*]?(?:\(\))?)/)
+    .split(/(:\w+[?*]?(?:\(\))?)/)
     .filter(Boolean)
     .map(i => i[0] === ':'
       ? i.replace(/\(\)$/, '?')
@@ -72,7 +73,7 @@ function navigate() {
               </template>
             </div>
           </template>
-          <NButton block n="primary">
+          <NButton type="submit" block n="primary">
             Navigate
           </NButton>
         </form>

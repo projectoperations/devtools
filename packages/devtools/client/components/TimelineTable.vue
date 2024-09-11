@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { clamp } from '@antfu/utils'
-import type { TimelineEvent, TimelineEventNormalized, TimelineMetrics } from '../../types'
 import { segmentTimelineEvents } from '~/composables/timeline'
+import type { TimelineEvent, TimelineEventNormalized, TimelineMetrics } from '../../types'
 
 const props = defineProps<{
   data: TimelineMetrics
@@ -21,7 +21,7 @@ const scale = ref(1.5)
 const segments = computed(() => segmentTimelineEvents(props.data.events))
 
 const scrollWidth = computed(() => {
-  // eslint-disable-next-line no-unused-expressions
+  // eslint-disable-next-line ts/no-unused-expressions
   props.data.events.length
   return scroller.value?.scrollWidth || window.innerWidth
 })
@@ -150,7 +150,7 @@ useEventListener(scroller, 'wheel', (e: WheelEvent) => {
 <style scoped>
 .timeline-scroller::-webkit-scrollbar {
   height: 100px;
-  width: 0.1px;;
+  width: 0.1px;
 }
 
 .timeline-scroller::-webkit-scrollbar-track {

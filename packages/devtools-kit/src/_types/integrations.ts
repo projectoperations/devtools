@@ -1,6 +1,6 @@
-import type { RouteRecordNormalized } from 'vue-router'
-import type { Import, UnimportMeta } from 'unimport'
 import type { Component } from 'nuxt/schema'
+import type { Import, UnimportMeta } from 'unimport'
+import type { RouteRecordNormalized } from 'vue-router'
 
 export interface HookInfo {
   name: string
@@ -67,6 +67,26 @@ export interface Payload {
   data?: Record<string, any>
   state?: Record<string, any>
   functions?: Record<string, any>
+}
+
+export interface ServerTaskInfo {
+  name: string
+  handler: string
+  description: string
+  type: 'collection' | 'task'
+  tasks?: ServerTaskInfo[]
+}
+
+export interface ScannedNitroTasks {
+  tasks: {
+    [name: string]: {
+      handler: string
+      description: string
+    }
+  }
+  scheduledTasks: {
+    [cron: string]: string[]
+  }
 }
 
 export interface PluginInfoWithMetic {
@@ -170,7 +190,7 @@ export interface VueInspectorClient {
   enable: () => void
   disable: () => void
   toggleEnabled: () => void
-  openInEditor: (baseUrl: string, file: string, line: number, column: number) => void
+  openInEditor: (url: URL) => void
   onUpdated: () => void
 }
 
@@ -185,6 +205,7 @@ export interface AssetInfo {
   filePath: string
   size: number
   mtime: number
+  layer?: string
 }
 
 export interface AssetEntry {

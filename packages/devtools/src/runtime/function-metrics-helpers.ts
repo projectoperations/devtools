@@ -1,7 +1,7 @@
 // @unimport-disable
-import { markRaw, reactive } from 'vue'
 import { parse as parseStrackTrace } from 'error-stack-parser-es'
-import type { TimelineEventFunction, TimelineMetrics } from '../types'
+import { markRaw, reactive } from 'vue'
+import type { TimelineEventFunction, TimelineMetrics } from '@nuxt/devtools/types'
 import { useObjectStorage } from './plugins/view/utils'
 
 const nonLiteralSymbol = Symbol('nuxt-devtools-fn-metrics-non-literal')
@@ -16,7 +16,7 @@ function getStacktrace() {
 }
 
 export function initTimelineMetrics(): TimelineMetrics {
-  if (process.server)
+  if (import.meta.server)
     return undefined!
 
   if (window.__NUXT_DEVTOOLS_TIMELINE_METRICS__)
@@ -45,7 +45,7 @@ export function initTimelineMetrics(): TimelineMetrics {
 const wrapperFunctions = new WeakMap<any, any>()
 
 export function __nuxtTimelineWrap(name: string, fn: any) {
-  if (process.server)
+  if (import.meta.server)
     return fn
   if (typeof fn !== 'function')
     return fn
@@ -76,15 +76,16 @@ export function __nuxtTimelineWrap(name: string, fn: any) {
     try {
       if (result && typeof result.then === 'function') {
         event.isPromise = true
-        return result
+        result
           .then((i: any) => i)
           .finally(() => {
             event.end = Date.now()
             return result
           })
+        return result
       }
     }
-    catch (e) {}
+    catch {}
     event.end = Date.now()
     return result
   }

@@ -1,6 +1,6 @@
-import type { Ref } from 'vue'
 import { shallowRef } from 'vue'
-import type { NuxtDevtoolsHostClient } from '../types'
+import type { NuxtDevtoolsHostClient } from '@nuxt/devtools/types'
+import type { Ref } from 'vue'
 
 /**
  * Get Nuxt DevTools client for host app
@@ -12,7 +12,7 @@ export function useNuxtDevTools(): Ref<NuxtDevtoolsHostClient | undefined> {
   if (!process.dev)
     return r
 
-  if (process.server)
+  if (import.meta.server)
     return r
 
   if (window.__NUXT_DEVTOOLS_HOST__) {

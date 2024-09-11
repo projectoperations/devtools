@@ -1,25 +1,25 @@
 import { existsSync } from 'node:fs'
-import os from 'node:os'
 import fs from 'node:fs/promises'
-import type { ServerResponse } from 'node:http'
-import { join } from 'pathe'
-import type { Nuxt } from 'nuxt/schema'
+import os from 'node:os'
 import { addPlugin, addTemplate, addVitePlugin, logger } from '@nuxt/kit'
-import type { ViteDevServer } from 'vite'
-import { searchForWorkspaceRoot } from 'vite'
-import sirv from 'sirv'
 import { colors } from 'consola/utils'
+import { join } from 'pathe'
+import sirv from 'sirv'
+import { searchForWorkspaceRoot } from 'vite'
+import type { ServerResponse } from 'node:http'
+import type { Nuxt } from 'nuxt/schema'
+import type { ViteDevServer } from 'vite'
 import { version } from '../package.json'
-import type { ModuleOptions, NuxtDevToolsOptions } from './types'
-import { setupRPC } from './server-rpc'
-import { clientDir, isGlobalInstall, packageDir, runtimeDir } from './dirs'
 import { defaultTabOptions } from './constant'
 import { getDevAuthToken } from './dev-auth'
+import { clientDir, isGlobalInstall, packageDir, runtimeDir } from './dirs'
+import { setupRPC } from './server-rpc'
 import { readLocalOptions } from './utils/local-options'
+import type { ModuleOptions, NuxtDevToolsOptions } from './types'
 
 export async function enableModule(options: ModuleOptions, nuxt: Nuxt) {
   // Disable in test mode
-  if (process.env.TEST || process.env.NODE_ENV === 'test')
+  if (process.env.TEST || process.env.NODE_ENV === 'test' || nuxt.options.test)
     return
 
   if (nuxt.options.builder !== '@nuxt/vite-builder') {
@@ -28,7 +28,7 @@ export async function enableModule(options: ModuleOptions, nuxt: Nuxt) {
   }
 
   if (!nuxt.options.dev) {
-    if (nuxt.options.build.analyze)
+    if (nuxt.options.build.analyze && (nuxt.options.build.analyze === true || nuxt.options.build.analyze.enabled))
       await import('./integrations/analyze-build').then(({ setup }) => setup(nuxt, options))
     return
   }
@@ -39,6 +39,11 @@ export async function enableModule(options: ModuleOptions, nuxt: Nuxt) {
     || !!nuxt.options.modules.find(m => m === '@nuxt/devtools' || m === '@nuxt/devtools-edge')
 
   await nuxt.callHook('devtools:before')
+
+  if (options.iframeProps) {
+    nuxt.options.runtimeConfig.app.devtools ||= {}
+    nuxt.options.runtimeConfig.app.devtools.iframeProps = options.iframeProps
+  }
 
   // Make unimport exposing more information, like the usage of each auto imported function
   nuxt.options.imports.collectMeta = true
@@ -72,8 +77,12 @@ export async function enableModule(options: ModuleOptions, nuxt: Nuxt) {
     },
   })
 
-  // Inject inline script
   nuxt.hook('nitro:config', (config) => {
+    // Check user opted-in for tasks
+    if (config.experimental?.tasks)
+      defaultTabOptions.serverTasks.enabled = true
+
+    // Inject inline script
     config.externals = config.externals || {}
     config.externals.inline = config.externals.inline || []
     config.externals.inline.push(join(runtimeDir, 'nitro'))
@@ -178,14 +187,17 @@ window.__NUXT_DEVTOOLS_TIME_METRIC__.appInit = Date.now()
     })
   })
 
+  await import('./integrations/plugin-metrics').then(({ setup }) => setup(ctx))
+
+  await import('./integrations/vue-devtools').then(({ setup }) => setup(ctx))
+
+  if (options.viteInspect !== false)
+    await import('./integrations/vite-inspect').then(({ setup }) => setup(ctx))
+
+  if (options.componentInspector !== false)
+    await import('./integrations/vue-inspector').then(({ setup }) => setup(ctx))
+
   const integrations = [
-    import('./integrations/plugin-metrics').then(({ setup }) => setup(ctx)),
-    options.viteInspect !== false
-      ? import('./integrations/vite-inspect').then(({ setup }) => setup(ctx))
-      : null,
-    options.componentInspector !== false
-      ? import('./integrations/vue-inspector').then(({ setup }) => setup(ctx))
-      : null,
     options.vscode?.enabled
       ? import('./integrations/vscode').then(({ setup }) => setup(ctx))
       : null,

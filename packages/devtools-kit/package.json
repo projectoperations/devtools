@@ -1,7 +1,7 @@
 {
   "name": "@nuxt/devtools-kit",
   "type": "module",
-  "version": "1.0.4",
+  "version": "1.4.2",
   "license": "MIT",
   "homepage": "https://devtools.nuxt.com/module/utils-kit",
   "repository": {
@@ -23,6 +23,10 @@
     "./iframe-client": {
       "types": "./iframe-client.d.ts",
       "import": "./iframe-client.mjs"
+    },
+    "./host-client": {
+      "types": "./host-client.d.ts",
+      "import": "./host-client.mjs"
     }
   },
   "main": "./dist/index.cjs",
@@ -37,24 +41,23 @@
     "build": "unbuild",
     "stub": "unbuild --stub",
     "dev:prepare": "nr stub",
-    "prepublishOnly": "pnpm build"
+    "prepack": "pnpm build"
   },
   "peerDependencies": {
-    "nuxt": "^3.8.1",
     "vite": "*"
   },
   "dependencies": {
-    "@nuxt/kit": "^3.8.2",
-    "@nuxt/schema": "^3.8.2",
-    "execa": "^7.2.0"
+    "@nuxt/kit": "catalog:",
+    "@nuxt/schema": "catalog:",
+    "execa": "catalog:"
   },
   "devDependencies": {
-    "birpc": "^0.2.14",
-    "error-stack-parser-es": "^0.1.1",
-    "hookable": "^5.5.3",
-    "unbuild": "^2.0.0",
-    "unimport": "^3.6.0",
-    "vite-plugin-vue-inspector": "^4.0.0",
-    "vue-router": "^4.2.5"
+    "birpc": "catalog:",
+    "error-stack-parser-es": "catalog:",
+    "hookable": "catalog:",
+    "unbuild": "catalog:",
+    "unimport": "catalog:",
+    "vite-plugin-vue-inspector": "catalog:",
+    "vue-router": "catalog:"
   }
 }

@@ -1,3 +1,323 @@
+## [1.4.2](https://github.com/nuxt/devtools/compare/v1.4.1...v1.4.2) (2024-09-10)
+
+
+### Bug Fixes
+
+* use explicit imports of types ([#715](https://github.com/nuxt/devtools/issues/715)) ([4c54247](https://github.com/nuxt/devtools/commit/4c54247a88641906a8a8a2fe4bbc3907bd7a039e))
+
+
+
+## [1.4.1](https://github.com/nuxt/devtools/compare/v1.4.0...v1.4.1) (2024-08-26)
+
+
+### Bug Fixes
+
+* devtools-kit re-export ([d16cafc](https://github.com/nuxt/devtools/commit/d16cafc1b9b39bcf6099b066016079040f69e6ca))
+* **state-editor:** update deepSync function ([#713](https://github.com/nuxt/devtools/issues/713)) ([a7b9efb](https://github.com/nuxt/devtools/commit/a7b9efbd293484acdbf027193cf18515a0756992))
+
+
+
+# [1.4.0](https://github.com/nuxt/devtools/compare/v1.3.14...v1.4.0) (2024-08-26)
+
+
+### Features
+
+* **kit:** introduce `host-client` utility ([167373c](https://github.com/nuxt/devtools/commit/167373c0770180680c497f8dbba175b0e4b1563e))
+
+
+
+## [1.3.14](https://github.com/nuxt/devtools/compare/v1.3.13...v1.3.14) (2024-08-20)
+
+
+
+## [1.3.13](https://github.com/nuxt/devtools/compare/v1.3.12...v1.3.13) (2024-08-20)
+
+
+
+## [1.3.12](https://github.com/nuxt/devtools/compare/v1.3.11...v1.3.12) (2024-08-20)
+
+
+
+## [1.3.11](https://github.com/nuxt/devtools/compare/v1.3.10...v1.3.11) (2024-08-20)
+
+
+
+## [1.3.10](https://github.com/nuxt/devtools/compare/v1.3.9...v1.3.10) (2024-08-20)
+
+
+### Bug Fixes
+
+* color mode ([19ac073](https://github.com/nuxt/devtools/commit/19ac0734e83a54a90626675d14dcc82e22de876b))
+
+
+### Features
+
+* add search functionality to components graph ([#696](https://github.com/nuxt/devtools/issues/696)) ([1a0f81a](https://github.com/nuxt/devtools/commit/1a0f81ad84719cbdcf90a889aa1f33ee225750c3))
+
+
+
+## [1.3.9](https://github.com/nuxt/devtools/compare/v1.3.8...v1.3.9) (2024-07-02)
+
+
+### Bug Fixes
+
+* capture for circular reference in state editor ([841fd76](https://github.com/nuxt/devtools/commit/841fd76002b3eb82871659ab57fe5ace66cd64d8))
+* introduce `client.revision` to trigger state editor update ([418a22e](https://github.com/nuxt/devtools/commit/418a22ed624584a25eab2ed4880147e6d572eb32))
+* **modules:** update compatibility check for Nuxt 3 and 4 ([#689](https://github.com/nuxt/devtools/issues/689)) ([2354da7](https://github.com/nuxt/devtools/commit/2354da79b77741893d1e35270d7406ae76cc75c7))
+* use `ofetch` for `fast-npm-meta` ([4188f8d](https://github.com/nuxt/devtools/commit/4188f8d3a2323873ef760aa2fe5b7b5faca22959))
+
+
+
+## [1.3.8](https://github.com/nuxt/devtools/compare/v1.3.7...v1.3.8) (2024-07-02)
+
+
+### Performance Improvements
+
+* avoid deps on `npm-registry-fetch`, save install size ([3d74691](https://github.com/nuxt/devtools/commit/3d74691d4daae3ef1fba14cff01b160c1409ebd3))
+
+
+
+## [1.3.7](https://github.com/nuxt/devtools/compare/v1.3.6...v1.3.7) (2024-06-27)
+
+
+### Bug Fixes
+
+* OpenGraph layout ([#685](https://github.com/nuxt/devtools/issues/685)) ([760f149](https://github.com/nuxt/devtools/commit/760f14920f5c02d1d88a43671795bef06afafa02))
+* scrollable sidebar ([#682](https://github.com/nuxt/devtools/issues/682)) ([df459f9](https://github.com/nuxt/devtools/commit/df459f9057bd8122c85540c87a53489e5bf9826b))
+* **server-routes:** unable to clear all params ([#684](https://github.com/nuxt/devtools/issues/684)) ([d88b003](https://github.com/nuxt/devtools/commit/d88b003fa244204b3c0c43b0cf250d790e4526f9))
+
+
+### Features
+
+* use nuxt search api for showing docs ([#681](https://github.com/nuxt/devtools/issues/681)) ([52b6468](https://github.com/nuxt/devtools/commit/52b6468df31d65528fbc3f0e58d189265523e11c))
+
+
+### Performance Improvements
+
+* use `npm-registry-fetch` instead of `pacote` to deduce the package size ([a049c52](https://github.com/nuxt/devtools/commit/a049c5204debe7efeb8420cde4cb6b0aa1559b3f))
+
+
+
+## [1.3.6](https://github.com/nuxt/devtools/compare/v1.3.5...v1.3.6) (2024-06-21)
+
+
+### Features
+
+* migrate vue-devtools to v7.3 ([#675](https://github.com/nuxt/devtools/issues/675)) ([79e6d35](https://github.com/nuxt/devtools/commit/79e6d3584e3868e46e76c616e089d67e9f24b39e))
+
+
+
+## [1.3.5](https://github.com/nuxt/devtools/compare/v1.3.4...v1.3.5) (2024-06-21)
+
+
+### Bug Fixes
+
+* downgrade module-builder ([de79dc4](https://github.com/nuxt/devtools/commit/de79dc494074bc7bb8e6ccfd711e57a6d533d95a))
+
+
+
+## [1.3.4](https://github.com/nuxt/devtools/compare/v1.3.3...v1.3.4) (2024-06-21)
+
+
+### Bug Fixes
+
+* color mode ([#679](https://github.com/nuxt/devtools/issues/679)) ([d276b31](https://github.com/nuxt/devtools/commit/d276b314255a7601dbc0781527764f20e81e9558))
+* navigate to pages with param ([#678](https://github.com/nuxt/devtools/issues/678)) ([316bcd9](https://github.com/nuxt/devtools/commit/316bcd996b9c2c3ed1b760c1ddd4f83d4fd60a0f))
+
+
+
+## [1.3.3](https://github.com/nuxt/devtools/compare/v1.3.2...v1.3.3) (2024-06-04)
+
+
+### Bug Fixes
+
+* pin `@vue/devtools-*` ([4c79fac](https://github.com/nuxt/devtools/commit/4c79fac7ca16c963640e92c5c50f1346d375cc35))
+* sort items in fuse ([#670](https://github.com/nuxt/devtools/issues/670)) ([8d052be](https://github.com/nuxt/devtools/commit/8d052be418661af150e46f3d65e231ecaa02129c))
+
+
+
+## [1.3.2](https://github.com/nuxt/devtools/compare/v1.3.1...v1.3.2) (2024-05-27)
+
+
+### Bug Fixes
+
+* floating-vue style ([7b7dc32](https://github.com/nuxt/devtools/commit/7b7dc32edebb2ea9b1fa5662b588dcbf78ff5726))
+* sidebar scroll ([946f930](https://github.com/nuxt/devtools/commit/946f93093b72114b45f8aa1b70b9fb21005f7042))
+* **timeline:** reduce warning ([#661](https://github.com/nuxt/devtools/issues/661)) ([33fe685](https://github.com/nuxt/devtools/commit/33fe6857dabff26a0cb30fb1b1f170e8a658a96b))
+
+
+
+## [1.3.1](https://github.com/nuxt/devtools/compare/v1.3.0...v1.3.1) (2024-05-10)
+
+
+### Bug Fixes
+
+* module builder chunk path patch ([87199a1](https://github.com/nuxt/devtools/commit/87199a174ed662dffc6d1eeaa04116635576fca6))
+
+
+
+# [1.3.0](https://github.com/nuxt/devtools/compare/v1.2.0...v1.3.0) (2024-05-10)
+
+
+### Bug Fixes
+
+* **devtools:** optimize the home page layout ([#654](https://github.com/nuxt/devtools/issues/654)) ([a1ad266](https://github.com/nuxt/devtools/commit/a1ad26671414c0128aa51d105534298b714cbf93))
+* upgrade `vite-plugin-vue-inspector`, fix [#657](https://github.com/nuxt/devtools/issues/657) ([f67f0f2](https://github.com/nuxt/devtools/commit/f67f0f2069f8675eeb2e8118aa09c04d448ccda9))
+
+
+### Features
+
+* components tree panel ([#655](https://github.com/nuxt/devtools/issues/655)) ([3162269](https://github.com/nuxt/devtools/commit/3162269329b6e4d3b89199143fc551616570edd5))
+* hide devtools when printing ([#648](https://github.com/nuxt/devtools/issues/648)) ([1be7b2d](https://github.com/nuxt/devtools/commit/1be7b2da4015d422f96542602b1b9e106ea7b1b3))
+
+
+
+# [1.2.0](https://github.com/nuxt/devtools/compare/v1.1.5...v1.2.0) (2024-04-19)
+
+
+### Bug Fixes
+
+* adopt forward-compatible approach to `builder:watch` ([#637](https://github.com/nuxt/devtools/issues/637)) ([800d71f](https://github.com/nuxt/devtools/commit/800d71fd4962a0bf4357484c1fbecc6dec8a743e))
+* opt in to `import.meta.*` properties ([#635](https://github.com/nuxt/devtools/issues/635)) ([ce60ab4](https://github.com/nuxt/devtools/commit/ce60ab426ac9000f5abee741a6e3d3144f868f18))
+
+
+
+## [1.1.5](https://github.com/nuxt/devtools/compare/v1.1.4...v1.1.5) (2024-03-28)
+
+
+### Features
+
+* update `@vue/devtools-applet`, fix [#640](https://github.com/nuxt/devtools/issues/640) ([cbb711d](https://github.com/nuxt/devtools/commit/cbb711d1d56ff27bb78055945267c05ad8cc7328))
+
+
+
+## [1.1.4](https://github.com/nuxt/devtools/compare/v1.1.3...v1.1.4) (2024-03-26)
+
+
+### Bug Fixes
+
+* update vue devtools applet ([5163c0d](https://github.com/nuxt/devtools/commit/5163c0de4cc9ba3e9ad75adb686852d65ffdf29e))
+* vite-inspect iframe url ([#633](https://github.com/nuxt/devtools/issues/633)) ([2c942e5](https://github.com/nuxt/devtools/commit/2c942e59a664204b9a16acfd086c60588f1e3b4a))
+
+
+
+## [1.1.3](https://github.com/nuxt/devtools/compare/v1.1.2...v1.1.3) (2024-03-21)
+
+
+### Bug Fixes
+
+* **devtools:** do not try to overlay on server ([#630](https://github.com/nuxt/devtools/issues/630)) ([9b633cd](https://github.com/nuxt/devtools/commit/9b633cda75377afb4a5b6b26780a1e92012b6063))
+
+
+
+## [1.1.2](https://github.com/nuxt/devtools/compare/v1.1.1...v1.1.2) (2024-03-21)
+
+
+### Bug Fixes
+
+* **pinia:** pinia module searching null safety ([#628](https://github.com/nuxt/devtools/issues/628)) ([8937b78](https://github.com/nuxt/devtools/commit/8937b783cbb8d5e4a480d7b82c32626abaea5c8d))
+* scheduledTasks can be undefined ([#626](https://github.com/nuxt/devtools/issues/626)) ([7044c47](https://github.com/nuxt/devtools/commit/7044c47fad36fe90ebbc2e1bef3d92783a1aa596))
+
+
+### Features
+
+* enable picture in picture for localhost ([#627](https://github.com/nuxt/devtools/issues/627)) ([c43500a](https://github.com/nuxt/devtools/commit/c43500ae2f2cdf30ccf4592e729fbda7c20995e8))
+
+
+
+## [1.1.1](https://github.com/nuxt/devtools/compare/v1.1.0...v1.1.1) (2024-03-20)
+
+
+### Bug Fixes
+
+* **client:** pinia panel visible logic ([#624](https://github.com/nuxt/devtools/issues/624)) ([ed599ab](https://github.com/nuxt/devtools/commit/ed599ab1e671aa04c51d5df2c22baf062b5369de))
+* use RPC to get tasks ([#625](https://github.com/nuxt/devtools/issues/625)) ([4f347a2](https://github.com/nuxt/devtools/commit/4f347a2c81b4042903b80df2f9f74fd37a540896))
+
+
+
+# [1.1.0](https://github.com/nuxt/devtools/compare/v1.0.8...v1.1.0) (2024-03-20)
+
+
+### Bug Fixes
+
+* augment runtime config correctly ([2d199b8](https://github.com/nuxt/devtools/commit/2d199b83d5d3c5f655cd409da1acdf000168a86b))
+* devtools border-radius ([#617](https://github.com/nuxt/devtools/issues/617)) ([36c300a](https://github.com/nuxt/devtools/commit/36c300ab334eeec3266b03c0d50c9a9b68778ddf))
+* floating-vue arrow style ([#578](https://github.com/nuxt/devtools/issues/578)) ([4553d50](https://github.com/nuxt/devtools/commit/4553d5075be2f9636cb4bdb4660221eb972c95c3))
+* floating-vue arrow style in dark ([#582](https://github.com/nuxt/devtools/issues/582)) ([0023611](https://github.com/nuxt/devtools/commit/0023611db455585afc6e73ace86708da6495cc9c))
+* inspect tab when custom buildAssetsDir is configured, fixes [#589](https://github.com/nuxt/devtools/issues/589) ([#588](https://github.com/nuxt/devtools/issues/588)) ([97386b2](https://github.com/nuxt/devtools/commit/97386b24368c18fe00232a189f327b6fa00a6208))
+* override `tsx` dependency to known fixed version (broken on Node v18.19.0+) ([#606](https://github.com/nuxt/devtools/issues/606)) ([1bc2e71](https://github.com/nuxt/devtools/commit/1bc2e71c7423638c92893184d44636772a1e3cba))
+* provide a label for accessbility ([#591](https://github.com/nuxt/devtools/issues/591)) ([6cb9220](https://github.com/nuxt/devtools/commit/6cb9220c82fc22a4a32424b3f571ea97d050ccb8))
+* remove unnecessary line + open devtools calling twice `syncClient` ([#584](https://github.com/nuxt/devtools/issues/584)) ([9a2dbc2](https://github.com/nuxt/devtools/commit/9a2dbc25d9bc681d1eb2b50087e5854e20eb0484))
+* support for resizing window in touch screen ([#616](https://github.com/nuxt/devtools/issues/616)) ([31e01fb](https://github.com/nuxt/devtools/commit/31e01fbb7378ca7150b2762ca8010e436785d329))
+* **ui:** [@apply](https://github.com/apply) conflict with tailwind ([#619](https://github.com/nuxt/devtools/issues/619)) ([4e1d329](https://github.com/nuxt/devtools/commit/4e1d329d319a50f2f456e004a30682bb0cd7f527))
+* **ui:** Added composable to build config ([#579](https://github.com/nuxt/devtools/issues/579)) ([f3c3de1](https://github.com/nuxt/devtools/commit/f3c3de1d95ba5da08dd665c2918500b309adb2af))
+* **ui:** disabled NButton. Also disable NuxtLink when used with `to`. ([#581](https://github.com/nuxt/devtools/issues/581)) ([12dae59](https://github.com/nuxt/devtools/commit/12dae597b1c9e1e77749b3ea5ddde71c60847d2b))
+
+
+### Features
+
+* **assets:** support for layers ([#618](https://github.com/nuxt/devtools/issues/618)) ([b8572b6](https://github.com/nuxt/devtools/commit/b8572b68daad93600900684ca0af032a3366d22b))
+* pinia panel ([#621](https://github.com/nuxt/devtools/issues/621)) ([56be5a7](https://github.com/nuxt/devtools/commit/56be5a73585b9fd0f3169915bc2169dbe96379e7))
+* Server Tasks tab ([#614](https://github.com/nuxt/devtools/issues/614)) ([bee12e8](https://github.com/nuxt/devtools/commit/bee12e88a44b3e7f032942cf884af489448f57b8))
+* **ui:** added autocomplete props to NTextInput component ([#574](https://github.com/nuxt/devtools/issues/574)) ([46cc36f](https://github.com/nuxt/devtools/commit/46cc36fac34f67f2f42d78b9e0aec398fdcff027))
+
+
+
+## [1.0.8](https://github.com/nuxt/devtools/compare/v1.0.7...v1.0.8) (2024-01-11)
+
+
+### Bug Fixes
+
+* remove debugging code ([f05143b](https://github.com/nuxt/devtools/commit/f05143bc90e59aba0355e3217a9276ff9d3cec47))
+
+
+
+## [1.0.7](https://github.com/nuxt/devtools/compare/v1.0.6...v1.0.7) (2024-01-11)
+
+
+### Bug Fixes
+
+* **devtools:** update default types to `module.d.ts`/`.mts` ([#559](https://github.com/nuxt/devtools/issues/559)) ([2ecd32c](https://github.com/nuxt/devtools/commit/2ecd32cd28d993e83a08c7a658c494c11e90daa0))
+* make twitter og tags optional ([41ee5ec](https://github.com/nuxt/devtools/commit/41ee5eca5e2cea5a1d093fb1a3bb4b9875adb819))
+* **open-graph:** fix type error, close [#563](https://github.com/nuxt/devtools/issues/563) ([c63055a](https://github.com/nuxt/devtools/commit/c63055a172bc49da59ebccb111841b767b30e427))
+* support `iframeProps` option for CSP, fix Stackblitz ([0eb7a82](https://github.com/nuxt/devtools/commit/0eb7a82bef1639ebfeace68f73ccebc11ea8e0a6))
+* **timeline-helper-wrapper:** Fix return value in timeline wrapper for promises ([#567](https://github.com/nuxt/devtools/issues/567)) ([0645e35](https://github.com/nuxt/devtools/commit/0645e351bc9724802ebf0537312279a7338215fb))
+* update title of Eye Dropper command ([#558](https://github.com/nuxt/devtools/issues/558)) ([ea58139](https://github.com/nuxt/devtools/commit/ea58139d1a5e2a8906c0d285325919518cfbab87))
+
+
+### Features
+
+* **server-routes:** implement persisting input values in localStorage ([#545](https://github.com/nuxt/devtools/issues/545)) ([67dbf65](https://github.com/nuxt/devtools/commit/67dbf6512be6ddc12898c57ca3019d81c87119c6))
+
+
+
+## [1.0.6](https://github.com/nuxt/devtools/compare/v1.0.5...v1.0.6) (2023-12-13)
+
+
+### Bug Fixes
+
+* improve rpc import message, close [#528](https://github.com/nuxt/devtools/issues/528) ([721dda8](https://github.com/nuxt/devtools/commit/721dda8afb10e575021c990a473943ebc92bdeb9))
+* **server-routes:** improve filterByCollection for runtime routes ([#538](https://github.com/nuxt/devtools/issues/538)) ([ec144d1](https://github.com/nuxt/devtools/commit/ec144d119ace0384d3f2d52b3f087f50e9851852))
+* **SideNav:** logo text color in light mode ([#537](https://github.com/nuxt/devtools/issues/537)) ([4dbe60d](https://github.com/nuxt/devtools/commit/4dbe60dce7205a72932a77754741c89fb6239002))
+* stable integrations setup to have consistent plugins order ([#542](https://github.com/nuxt/devtools/issues/542)) ([310929b](https://github.com/nuxt/devtools/commit/310929bd792f039bcd71b1e9be8f032084694447))
+
+
+
+## [1.0.5](https://github.com/nuxt/devtools/compare/v1.0.4...v1.0.5) (2023-12-07)
+
+
+### Bug Fixes
+
+* allow iframe to work in stricter cross-origin policy ([7ec0d3c](https://github.com/nuxt/devtools/commit/7ec0d3c84e817be849e0249e2bb5cee0f7336953))
+* **devtools:** don't enable devtools when in test mode ([#532](https://github.com/nuxt/devtools/issues/532)) ([3a7f143](https://github.com/nuxt/devtools/commit/3a7f143976e128cce6be2ce94673cb85effce9fd))
+
+
+### Features
+
+* add Eye Dropper command ([#530](https://github.com/nuxt/devtools/issues/530)) ([25584b9](https://github.com/nuxt/devtools/commit/25584b93dcd8eaa25013ce2c601796d098b7ac6f))
+
+
+
 ## [1.0.4](https://github.com/nuxt/devtools/compare/v1.0.3...v1.0.4) (2023-11-27)
 
 

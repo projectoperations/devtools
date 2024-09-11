@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import type { Import } from 'unimport'
 import Fuse from 'fuse.js'
+import type { Import } from 'unimport'
 
 definePageMeta({
   icon: 'carbon-function',
   title: 'Imports',
-  order: 3,
+  order: 4,
 })
 
 const config = useServerConfig()
@@ -15,9 +15,7 @@ const search = ref('')
 const autoImports = useAutoImports()
 const importsMetadata = computed(() => autoImports.value?.metadata)
 
-const functions = computed(() => autoImports.value?.imports
-  .filter(i => i.as || i.name)
-  .sort((a, b) => (a.as || a.name).localeCompare(b.as || b.name))
+const functions = computed(() => autoImports.value?.imports.filter(i => i.as || i.name).sort((a, b) => (a.as || a.name).localeCompare(b.as || b.name))
   || [])
 
 const fuse = computed(() => new Fuse(functions.value, {

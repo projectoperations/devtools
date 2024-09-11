@@ -13,7 +13,8 @@ const emit = defineEmits<{
 const timeAgo = useTimeAgo(() => props.segment.start, {
   updateInterval: 1000,
   showSecond: true,
-  messages: {
+  controls: false,
+  messages: ({
     justNow: '',
     past: s => s,
     future: s => s,
@@ -25,14 +26,14 @@ const timeAgo = useTimeAgo(() => props.segment.start, {
     day: d => `${d}d`,
     month: m => `${m}mo`,
     year: y => `${y}y`,
-  } as UseTimeAgoOptions<false>['messages'],
+  } satisfies UseTimeAgoOptions<false>['messages']) as any,
 })
 </script>
 
 <template>
   <div relative h-full>
     <button
-      absolute left-0 right-0 top-0 bg-green:5 px2 py1 text-left text-xs font-mono text-green6
+      absolute left-0 right-0 top-0 bg-green:5 px2 py1 text-left text-xs text-green6 font-mono
       @click="segment.route ? emit('select', segment.route) : undefined"
     >
       {{ segment.route?.event.to }}

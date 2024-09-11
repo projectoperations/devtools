@@ -1,8 +1,8 @@
 import { relative } from 'pathe'
-import type { Ref } from 'vue'
-import type { Component } from 'nuxt/schema'
-import type { ComponentRelationship, ComponentWithRelationships, NormalizedHeadTag, SocialPreviewCard, SocialPreviewResolved } from '~/../src/types'
 import type { AsyncDataOptions } from '#app'
+import type { ComponentRelationship, ComponentWithRelationships, NormalizedHeadTag, SocialPreviewCard, SocialPreviewResolved } from '~/../src/types'
+import type { Component } from 'nuxt/schema'
+import type { Ref } from 'vue'
 
 export function isNodeModulePath(path: string) {
   return !!path.match(/[/\\]node_modules[/\\]/) || isPackageName(path)
@@ -162,4 +162,17 @@ export function getComponentRelationships(component: Component, relationships?: 
 
 export function pluralizeByCount(count: number, singular: string, plural = `${singular}s`) {
   return `${count} ${count <= 1 ? singular : plural}`
+}
+
+export function refreshData() {
+  const client = useClient()
+  const nuxt = useNuxtApp()
+
+  nuxt.hooks.callHookParallel('app:data:refresh', Object.keys(nuxt.payload.data))
+  triggerRef(client)
+  client.value.revision.value += 1
+}
+
+export function reloadPage() {
+  location.reload()
 }

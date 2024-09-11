@@ -1,8 +1,9 @@
 import { createRequire } from 'node:module'
 import { logger, useNuxt } from '@nuxt/kit'
+import { getPackageInfo } from 'local-pkg'
+import { fetch } from 'ofetch'
 import { readPackageJSON } from 'pkg-types'
 import semver from 'semver'
-import { getPackageInfo } from 'local-pkg'
 import type { PackageUpdateInfo } from '../types'
 
 export async function getMainPackageJSON(nuxt = useNuxt()) {
@@ -22,16 +23,17 @@ export async function checkForUpdateOf(name: string, current?: string, nuxt = us
     if (!current)
       return
 
-    const packument = await import('pacote').then(r => r.default?.packument || r.packument)
-    const manifest = await packument(name)
+    const { getLatestVersion } = await import('fast-npm-meta')
+    const { version: latest } = await getLatestVersion(name, {
+      fetch,
+    })
 
-    const latest = manifest['dist-tags'].latest
-    const needsUpdate = latest !== current && semver.lt(current, latest)
+    const needsUpdate = !!latest && latest !== current && semver.lt(current, latest)
 
     return {
       name,
       current,
-      latest,
+      latest: latest || current,
       needsUpdate,
     }
   }

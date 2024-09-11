@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { InputData, jsonInputForTargetLanguage, quicktype } from 'quicktype-core'
 import { all as languages } from 'quicktype-core/dist/language/All'
-import type { BuiltinLanguage } from 'shikiji'
+import type { BuiltinLanguage } from 'shiki'
 
 const input = useSchemaInput()
 
@@ -14,7 +14,7 @@ const language = computed(() => languages.find(l => l.displayName === selectedLa
 const options = ref(language.value?.optionDefinitions.filter(o => typeof o.defaultValue === 'boolean'))
 
 const generatedJson = computedAsync(async () => {
-  // eslint-disable-next-line no-unused-expressions
+  // eslint-disable-next-line ts/no-unused-expressions
   counter.value
 
   if (!input.value)

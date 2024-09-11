@@ -1,19 +1,19 @@
 import fsp from 'node:fs/promises'
-import { parse } from 'node:path'
-import { join, resolve } from 'pathe'
+import { parse, relative } from 'node:path'
 import { imageMeta } from 'image-meta'
+import { join, resolve } from 'pathe'
 import { debounce } from 'perfect-debounce'
-import fg from 'fast-glob'
-import type { AssetEntry, AssetInfo, AssetType, ImageMeta, NuxtDevtoolsServerContext, ServerFunctions } from '../types'
+import { glob } from 'tinyglobby'
 import { defaultAllowedExtensions } from '../constant'
+import type { AssetEntry, AssetInfo, AssetType, ImageMeta, NuxtDevtoolsServerContext, ServerFunctions } from '../types'
 
 export function setupAssetsRPC({ nuxt, ensureDevAuthToken, refresh, options }: NuxtDevtoolsServerContext) {
   const _imageMetaCache = new Map<string, ImageMeta | undefined>()
   let cache: AssetInfo[] | null = null
 
   const extensions = options.assets?.uploadExtensions || defaultAllowedExtensions
-
   const publicDir = resolve(nuxt.options.srcDir, nuxt.options.dir.public)
+  const layerDirs = [publicDir, ...nuxt.options._layers.map(layer => resolve(layer.cwd, 'public'))]
 
   const refreshDebounced = debounce(() => {
     cache = null
@@ -21,6 +21,7 @@ export function setupAssetsRPC({ nuxt, ensureDevAuthToken, refresh, options }: N
   }, 500)
 
   nuxt.hook('builder:watch', (event, key) => {
+    key = relative(nuxt.options.srcDir, resolve(nuxt.options.srcDir, key))
     if (key.startsWith(nuxt.options.dir.public) && (event === 'add' || event === 'unlink'))
       refreshDebounced()
   })
@@ -30,39 +31,42 @@ export function setupAssetsRPC({ nuxt, ensureDevAuthToken, refresh, options }: N
       return cache
 
     const baseURL = nuxt.options.app.baseURL
-    const files = await fg(['**/*'], {
-      cwd: publicDir,
-      onlyFiles: true,
-    })
+    const dirs: { layerDir: string, files: string[] }[] = []
 
-    function guessType(path: string): AssetType {
-      if (/\.(png|jpe?g|jxl|gif|svg|webp|avif|ico|bmp|tiff?)$/i.test(path))
-        return 'image'
-      if (/\.(mp4|webm|ogv|mov|avi|flv|wmv|mpg|mpeg|mkv|3gp|3g2|ts|mts|m2ts|vob|ogm|ogx|rm|rmvb|asf|amv|divx|m4v|svi|viv|f4v|f4p|f4a|f4b)$/i.test(path))
-        return 'video'
-      if (/\.(mp3|wav|ogg|flac|aac|wma|alac|ape|ac3|dts|tta|opus|amr|aiff|au|mid|midi|ra|rm|wv|weba|dss|spx|vox|tak|dsf|dff|dsd|cda)$/i.test(path))
-        return 'audio'
-      if (/\.(woff2?|eot|ttf|otf|ttc|pfa|pfb|pfm|afm)/i.test(path))
-        return 'font'
-      if (/\.(json[5c]?|te?xt|[mc]?[jt]sx?|md[cx]?|markdown)/i.test(path))
-        return 'text'
-      return 'other'
+    for (const layerDir of layerDirs) {
+      const files = await glob(['**/*'], {
+        cwd: layerDir,
+        onlyFiles: true,
+      })
+      dirs.push({ layerDir, files })
     }
 
-    cache = await Promise.all(files.map(async (path) => {
-      const filePath = resolve(publicDir, path)
-      const stat = await fsp.lstat(filePath)
-      return {
-        path,
-        publicPath: join(baseURL, path),
-        filePath,
-        type: guessType(path),
-        size: stat.size,
-        mtime: stat.mtimeMs,
-      }
-    }))
+    const uniquePaths = new Set()
+    cache = []
 
-    return cache
+    for (const { layerDir, files } of dirs) {
+      for (const path of files) {
+        const filePath = resolve(layerDir, path)
+        const stat = await fsp.lstat(filePath)
+        const fullPath = join(baseURL, path)
+
+        // Check if path already exists in uniquePaths set
+        if (!uniquePaths.has(fullPath)) {
+          cache.push({
+            path,
+            publicPath: fullPath,
+            filePath,
+            type: guessType(path),
+            size: stat.size,
+            mtime: stat.mtimeMs,
+            layer: publicDir !== layerDir ? layerDir : undefined,
+          })
+          uniquePaths.add(fullPath)
+        }
+      }
+    }
+
+    return cache.sort((a, b) => a.path.localeCompare(b.path))
   }
 
   return {
@@ -121,7 +125,7 @@ export function setupAssetsRPC({ nuxt, ensureDevAuthToken, refresh, options }: N
                 i++
               finalPath = `${base}-${i}.${ext}`
             }
-            catch (err) {
+            catch {
               // Ignore error if file doesn't exist
             }
           }
@@ -146,4 +150,24 @@ export function setupAssetsRPC({ nuxt, ensureDevAuthToken, refresh, options }: N
       return await fsp.rename(oldPath, newPath)
     },
   } satisfies Partial<ServerFunctions>
+}
+
+const reImage = /\.(?:png|jpe?g|jxl|gif|svg|webp|avif|ico|bmp|tiff?)$/i
+const reVideo = /\.(?:mp4|webm|ogv|mov|avi|flv|wmv|mpg|mpeg|mkv|3gp|3g2|ts|mts|m2ts|vob|ogm|ogx|rm|rmvb|asf|amv|divx|m4v|svi|viv|f4v|f4p|f4a|f4b)$/i
+const reAudio = /\.(?:mp3|wav|ogg|flac|aac|wma|alac|ape|ac3|dts|tta|opus|amr|aiff|au|mid|midi|ra|rm|wv|weba|dss|spx|vox|tak|dsf|dff|dsd|cda)$/i
+const reFont = /\.(?:woff2?|eot|ttf|otf|ttc|pfa|pfb|pfm|afm)/i
+const reText = /\.(?:json[5c]?|te?xt|[mc]?[jt]sx?|md[cx]?|markdown)/i
+
+function guessType(path: string): AssetType {
+  if (reImage.test(path))
+    return 'image'
+  if (reVideo.test(path))
+    return 'video'
+  if (reAudio.test(path))
+    return 'audio'
+  if (reFont.test(path))
+    return 'font'
+  if (reText.test(path))
+    return 'text'
+  return 'other'
 }

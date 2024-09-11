@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { computed, nextTick } from 'vue'
-
 import { useColorMode } from '@vueuse/core'
 
-const mode = useColorMode()
+import { computed, nextTick } from 'vue'
+
+const mode = useColorMode({
+  storageKey: 'nuxt-devtools-color-mode',
+})
 const isDark = computed<boolean>({
   get() {
     return mode.value === 'dark'
@@ -14,7 +16,6 @@ const isDark = computed<boolean>({
 })
 
 const isAppearanceTransition = typeof document !== 'undefined'
-  // @ts-expect-error: Transition API
   && document.startViewTransition
   && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
@@ -70,7 +71,7 @@ const context = {
 </script>
 
 <template>
-  <ColorScheme tag="span">
+  <ClientOnly placeholder-tag="span">
     <slot v-bind="context" />
-  </ColorScheme>
+  </ClientOnly>
 </template>

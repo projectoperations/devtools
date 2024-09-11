@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import Fuse from 'fuse.js'
 // @ts-expect-error missing types
 import { RecycleScroller } from 'vue-virtual-scroller'
-import Fuse from 'fuse.js'
 import type { ModuleStaticInfo } from '../../src/types'
 
 type SortingFunction<T> = (a: T, b: T) => number
@@ -21,17 +21,25 @@ const sortingFactors: Record<typeof sortingOptions[number], SortingFunction<Modu
   updated: (a, b) => a.stats.publishedAt - b.stats.publishedAt,
 }
 
-const sortedItems = computed(() => collection.value?.slice()
-  .sort((a, b) => sortingFactors[selectedSortingOption.value](a, b) * (ascendingOrder.value ? 1 : -1)))
+const sortedItems = computed(() => collection.value
+  ?.toSorted((a, b) => sortingFactors[selectedSortingOption.value](a, b) * (ascendingOrder.value ? 1 : -1)))
 
 const search = ref('')
-const fuse = computed(() => new Fuse(sortedItems.value || [], {
+const fuse = computed(() => new Fuse(collection.value || [], {
   keys: [
     'name',
     'description',
     'npm',
     'category',
   ],
+  sortFn: (a, b) => {
+    const itemA = collection.value?.[a.idx]
+    const itemB = collection.value?.[b.idx]
+    if (itemA && itemB)
+      return sortingFactors[selectedSortingOption.value](itemA, itemB) * (ascendingOrder.value ? 1 : -1)
+    return (a.score - b.score)
+  },
+  threshold: 0.2,
 }))
 
 const items = computed(() => {
@@ -49,7 +57,6 @@ const items = computed(() => {
       icon="i-carbon-intent-request-create"
       text="Install Module"
     />
-
     <NNavbar v-model:search="search" no-padding px-6 pb-5 pt-2>
       <template #actions>
         <NDropdown direction="end" n="sm primary">

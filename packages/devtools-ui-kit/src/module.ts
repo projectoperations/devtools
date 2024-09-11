@@ -35,17 +35,16 @@ export default defineNuxtModule<ModuleOptions>({
     if (!options.dev)
       nuxt.options.unocss = extendUnocssOptions(nuxt.options.unocss)
 
-    // eslint-disable-next-line ts/prefer-ts-expect-error
+    // eslint-disable-next-line ts/ban-ts-comment
     // @ts-ignore - module options
     nuxt.options.vueuse = nuxt.options.vueuse || {}
-    // eslint-disable-next-line ts/prefer-ts-expect-error
+    // eslint-disable-next-line ts/ban-ts-comment
     // @ts-ignore - module options
     nuxt.options.colorMode = defu(nuxt.options.colorMode, { classSuffix: '' })
 
     const resolver = createResolver(import.meta.url)
     await installModule(await resolver.resolvePath('@unocss/nuxt'))
     await installModule(await resolver.resolvePath('@vueuse/nuxt'))
-    await installModule(await resolver.resolvePath('@nuxtjs/color-mode'))
     await installModule(await resolver.resolvePath('v-lazy-show/nuxt'))
   },
 })

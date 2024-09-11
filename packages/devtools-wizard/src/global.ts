@@ -4,17 +4,17 @@
  * Since Nuxt v3.4, Nuxt DevTools is shipped with Nuxt so we only using this for Nuxt below v3.4.
  */
 import fs from 'node:fs'
-import { readUser, writeUser } from 'rc9'
-import globalDirs from 'global-directory'
-import { resolve } from 'pathe'
 import { consola } from 'consola'
 import { execa } from 'execa'
+import globalDirs from 'global-directory'
+import { resolve } from 'pathe'
+import { readUser, writeUser } from 'rc9'
 
 const moduleName = '@nuxt/devtools'
 
 type RC = ReturnType<typeof readUser>
 export const RC_PATH = '.nuxtrc'
-const pathRegex = /[\\\/]@nuxt[\\\/]devtools[\\\/]/
+const pathRegex = /[\\/]@nuxt[\\/]devtools[\\/]/
 
 export async function enable(cwd: string) {
   const rc = readUser(RC_PATH)

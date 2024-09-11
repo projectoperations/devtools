@@ -1,15 +1,18 @@
-import type { Ref } from 'vue'
-import { computed, createApp, h, markRaw, nextTick, ref, shallowReactive, shallowRef, watch } from 'vue'
+import { setIframeServerContext } from '@vue/devtools-kit'
 import { createHooks } from 'hookable'
 import { debounce } from 'perfect-debounce'
-import type { Router } from 'vue-router'
+import { computed, createApp, h, markRaw, ref, shallowReactive, shallowRef, watch } from 'vue'
+
+import type { NuxtDevtoolsHostClient, TimelineEventRoute, TimelineMetrics } from '@nuxt/devtools/types'
 import type { $Fetch } from 'ofetch'
-import type { NuxtDevtoolsHostClient, TimelineEventRoute, TimelineMetrics } from '../../../types'
+import type { Ref } from 'vue'
+import type { Router } from 'vue-router'
+
 import { initTimelineMetrics } from '../../function-metrics-helpers'
 import Main from './Main.vue'
 import { popupWindow, state } from './state'
 
-// eslint-disable-next-line ts/prefer-ts-expect-error
+// eslint-disable-next-line ts/ban-ts-comment
 // @ts-ignore tsconfig
 import { useAppConfig, useRuntimeConfig } from '#imports'
 
@@ -57,7 +60,7 @@ export async function setupDevToolsClient({
           try {
             popupWindow.value.close()
           }
-          catch (e) {
+          catch {
           }
           popupWindow.value = null
         }
@@ -66,9 +69,6 @@ export async function setupDevToolsClient({
         if (state.value.open)
           return
         state.value.open = true
-        return nextTick(() => {
-          client.syncClient()
-        })
       },
       async navigate(path: string) {
         if (!state.value.open)
@@ -102,6 +102,8 @@ export async function setupDevToolsClient({
       clientTimeline: () => timeline,
       loading: () => timeMetric,
     },
+
+    revision: ref(0),
   })
 
   window.__NUXT_DEVTOOLS_HOST__ = client
@@ -115,7 +117,7 @@ export async function setupDevToolsClient({
     try {
       iframe?.contentWindow?.__NUXT_DEVTOOLS_VIEW__?.setClient(client)
     }
-    catch (e) {
+    catch {
       // cross-origin
     }
     return client
@@ -124,25 +126,27 @@ export async function setupDevToolsClient({
   function getIframe() {
     if (!iframe) {
       const runtimeConfig = useRuntimeConfig()
-      const CLIENT_PATH = `${runtimeConfig.app.baseURL}/__nuxt_devtools__/client`.replace(/\/+/g, '/')
+      const CLIENT_BASE = '/__nuxt_devtools__/client'
+      const CLIENT_PATH = `${runtimeConfig.app.baseURL.replace(CLIENT_BASE, '/')}${CLIENT_BASE}`.replace(/\/+/g, '/')
       const initialUrl = CLIENT_PATH + state.value.route
-      try {
-        iframe = document.createElement('iframe')
-        iframe.id = 'nuxt-devtools-iframe'
-        iframe.src = initialUrl
-        iframe.onload = async () => {
-          try {
-            await waitForClientInjection()
-            client.syncClient()
-          }
-          catch (e) {
-            console.error('Nuxt DevTools client injection failed')
-            console.error(e)
-          }
+      iframe = document.createElement('iframe')
+
+      // custom iframe props
+      for (const [key, value] of Object.entries(runtimeConfig.app.devtools?.iframeProps || {}))
+        iframe.setAttribute(key, String(value))
+
+      iframe.id = 'nuxt-devtools-iframe'
+      iframe.src = initialUrl
+      iframe.onload = async () => {
+        try {
+          setIframeServerContext(iframe!)
+          await waitForClientInjection()
+          client.syncClient()
         }
-      }
-      catch (e) {
-        console.error(e)
+        catch (e) {
+          console.error('Nuxt DevTools client injection failed')
+          console.error(e)
+        }
       }
     }
 
@@ -195,9 +199,9 @@ export async function setupDevToolsClient({
   function getInspectorInstance(): NuxtDevtoolsHostClient['inspector'] {
     const componentInspector = window.__VUE_INSPECTOR__
     if (componentInspector) {
-      componentInspector.openInEditor = async (baseUrl, file, line, column) => {
+      componentInspector.openInEditor = async (url) => {
         disableComponentInspector()
-        await client.hooks.callHook('host:inspector:click', baseUrl, file, line, column)
+        await client.hooks.callHook('host:inspector:click', url)
       }
       componentInspector.onUpdated = () => {
         client.hooks.callHook('host:inspector:update', {
@@ -206,11 +210,14 @@ export async function setupDevToolsClient({
         })
       }
     }
+
     return markRaw({
       isEnabled: isInspecting,
       enable: enableComponentInspector,
       disable: disableComponentInspector,
       toggle: () => {
+        if (!state.value.open)
+          client.devtools.open()
         if (window.__VUE_INSPECTOR__?.enabled)
           disableComponentInspector()
         else
@@ -252,6 +259,8 @@ export async function setupDevToolsClient({
       `
       pip.__NUXT_DEVTOOLS_DISABLE__ = true
       pip.__NUXT_DEVTOOLS_IS_POPUP__ = true
+      // eslint-disable-next-line ts/ban-ts-comment
+      // @ts-ignore Missing types
       pip.__NUXT__ = window.parent?.__NUXT__ || window.__NUXT__
       pip.document.title = 'Nuxt DevTools'
       pip.document.head.appendChild(style)
@@ -267,15 +276,13 @@ export async function setupDevToolsClient({
     }
   }
 
-  client.syncClient()
-
   const holder = document.createElement('div')
   holder.id = 'nuxt-devtools-container'
   holder.setAttribute('data-v-inspector-ignore', 'true')
   document.body.appendChild(holder)
 
   // Shortcut to toggle devtools
-  addEventListener('keydown', (e) => {
+  window.addEventListener('keydown', (e) => {
     if (e.code === 'KeyD' && e.altKey && e.shiftKey)
       client.devtools.toggle()
   })

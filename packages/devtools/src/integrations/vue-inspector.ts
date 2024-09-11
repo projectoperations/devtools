@@ -1,10 +1,10 @@
 import { addVitePlugin } from '@nuxt/kit'
-import type { Plugin } from 'vite'
 import VueInspector from 'vite-plugin-vue-inspector'
+import type { Plugin } from 'vite'
 import type { NuxtDevtoolsServerContext } from '../types'
 
-export async function setup({ nuxt, options }: NuxtDevtoolsServerContext) {
-  if (!nuxt.options.dev)
+export function setup({ nuxt, options }: NuxtDevtoolsServerContext) {
+  if (!nuxt.options.dev || nuxt.options.test)
     return
 
   addVitePlugin(VueInspector({

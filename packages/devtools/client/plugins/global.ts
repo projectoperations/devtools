@@ -5,19 +5,23 @@ export default defineNuxtPlugin(() => {
 
   function onUpdateReactivity() {
     triggerRef(client)
+    client.value.revision.value += 1
   }
 
   function onInspectorUpdate(data: any) {
     inspectorData.value = data
   }
 
-  function onInspectorClick(_: any, file: string, line: number, column: number) {
-    const url = `./${file}:${line}:${column}`
-    rpc.openInEditor(url)
+  function onInspectorClick(url: URL) {
+    const query = url.searchParams.get('file')
+    if (query)
+      rpc.openInEditor(query)
+    else
+      console.error('[nuxt-devtools] Failed to open file from Vue Inspector', url)
   }
 
   Object.defineProperty(window, '__NUXT_DEVTOOLS_VIEW__', {
-    value: <typeof window['__NUXT_DEVTOOLS_VIEW__']>{
+    value: {
       setClient(_client) {
         if (client.value === _client)
           return
@@ -33,7 +37,7 @@ export default defineNuxtPlugin(() => {
         // eslint-disable-next-line no-console
         console.log('[nuxt-devtools] Client connected', _client)
       },
-    },
+    } as typeof window['__NUXT_DEVTOOLS_VIEW__'],
     enumerable: false,
     configurable: true,
   })

@@ -1,6 +1,6 @@
-import type { Ref } from 'vue'
 import { shallowRef, triggerRef } from 'vue'
-import type { NuxtDevtoolsIframeClient } from '../types'
+import type { NuxtDevtoolsIframeClient } from '@nuxt/devtools-kit/types'
+import type { Ref } from 'vue'
 
 let clientRef: Ref<NuxtDevtoolsIframeClient | undefined> | undefined
 const hasSetup = false
@@ -15,10 +15,10 @@ export function onDevtoolsClientConnected(fn: (client: NuxtDevtoolsIframeClient)
   if (typeof window === 'undefined')
     return
 
-  // eslint-disable-next-line ts/prefer-ts-expect-error
+  // eslint-disable-next-line ts/ban-ts-comment
   // @ts-ignore injection
   if (window.__NUXT_DEVTOOLS__) {
-    // eslint-disable-next-line ts/prefer-ts-expect-error
+    // eslint-disable-next-line ts/ban-ts-comment
     // @ts-ignore injection
     fns.forEach(fn => fn(window.__NUXT_DEVTOOLS__))
   }
@@ -47,7 +47,9 @@ export function useDevtoolsClient() {
   }
 
   function onUpdateReactivity() {
-    triggerRef(clientRef!)
+    if (clientRef) {
+      triggerRef(clientRef)
+    }
   }
 
   function setup(client: NuxtDevtoolsIframeClient) {

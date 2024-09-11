@@ -1,27 +1,27 @@
-import { resolve } from 'node:path'
-import DevTools from '../src/module'
+import { createResolver } from 'nuxt/kit'
 import DevToolsUiKit from '../../devtools-ui-kit/src/module'
+import DevTools from '../src/module'
 
-function r(p: string) {
-  return resolve(__dirname, p)
-}
+const resolver = createResolver(import.meta.url)
 
 export default defineNuxtConfig({
   modules: [
-    'nuxt-vitest',
+    '@nuxt/test-utils/module',
     '~/modules/markdown',
     DevToolsUiKit,
     DevTools,
   ],
+
   ssr: false,
+
   nitro: {
     output: {
-      publicDir: r('../dist/client'),
+      publicDir: resolver.resolve('../dist/client'),
     },
     devStorage: {
       test: {
         driver: 'fs',
-        base: r('./.data/test'),
+        base: resolver.resolve('./.data/test'),
       },
     },
     hooks: {
@@ -30,15 +30,25 @@ export default defineNuxtConfig({
         routes.clear()
       },
     },
+    experimental: {
+      tasks: true,
+    },
+    scheduledTasks: {
+      '*/5 * * * *': ['collection:1', 'collection:2'],
+      '*/30 * * * *': ['ping'],
+    },
   },
+
   alias: {
-    '@nuxt/devtools-kit/iframe-client': r('../../devtools-kit/src/runtime/iframe-client'),
-    '@nuxt/devtools-kit/types': r('../../devtools-kit/src/types'),
-    '@nuxt/devtools-kit': r('../../devtools-kit/src/index'),
+    '@nuxt/devtools-kit/iframe-client': resolver.resolve('../../devtools-kit/src/runtime/iframe-client'),
+    '@nuxt/devtools-kit/types': resolver.resolve('../../devtools-kit/src/types'),
+    '@nuxt/devtools-kit': resolver.resolve('../../devtools-kit/src/index'),
   },
+
   appConfig: {
     fixture2: 'from nuxt.config.ts',
   },
+
   runtimeConfig: {
     'fixture3': 'private runtime config from nuxt.config.ts',
     'api-key': 'null',
@@ -46,23 +56,38 @@ export default defineNuxtConfig({
       fixture4: 'public runtime config from nuxt.config.ts',
     },
   },
+
   app: {
-    baseURL: '/__nuxt_devtools__/client',
+    baseURL: '/__nuxt_devtools__/client/',
   },
+
   experimental: {
     watcher: 'parcel',
   },
+
   vite: {
-    define: {
-      'process.env.VSCODE_TEXTMATE_DEBUG': 'false',
-    },
+    warmupEntry: false,
     build: {
       target: 'esnext',
     },
     optimizeDeps: {
       include: [
-        'vis-network',
+        '@unocss/preset-icons/browser',
+        '@unocss/runtime',
+        'cronstrue',
+        'diff',
+        'error-stack-parser-es',
+        'fuse.js',
+        'json-editor-vue',
+        'ohash',
+        'perfect-debounce',
+        'scule',
         'vis-data',
+        'vis-network',
+        'vue-virtual-scroller',
+        '@vue/devtools-applet',
+        '@xterm/xterm',
+        '@xterm/addon-fit',
       ],
     },
     server: {
@@ -71,9 +96,11 @@ export default defineNuxtConfig({
       },
     },
   },
+
   typescript: {
     includeWorkspace: true,
   },
+
   // Production Overrides
   $production: {
     app: {
@@ -81,4 +108,6 @@ export default defineNuxtConfig({
       baseURL: '/__NUXT_DEVTOOLS_BASE__/',
     },
   },
+
+  compatibilityDate: '2024-07-22',
 })

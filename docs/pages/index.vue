@@ -128,7 +128,7 @@ watch(projectsSectionVisible, () => {
             <li v-for="(project, idx) in section.projectCards" :key="idx">
               <UCard
                 class="group relative hidden cursor-pointer lg:block"
-                :ui="{ background: 'bg-transparent dark:bg-transparent', sahdow: 'none', ring: 'ring-0', body: { background: 'bg-transparent dark:bg-transparent', base: 'flex flex-col space-y-2' } }"
+                :ui="{ background: 'bg-transparent dark:bg-transparent', shadow: '', ring: 'ring-0', body: { background: 'bg-transparent dark:bg-transparent', base: 'flex flex-col space-y-2' } }"
               >
                 <div class="absolute inset-0 h-full w-full" @click="selectProjectCard(idx)" />
                 <h4
@@ -205,7 +205,6 @@ watch(projectsSectionVisible, () => {
         align="left" card
         :ui="{
           background: 'bg-gradient-to-b from-gray-900 to-gray-950',
-          body: { background: 'bg-gradient-to-b from-gray-900 to-gray-950' },
           links: 'mt-10 flex flex-col space-y-4 items-center justify-center lg:justify-start gap-x-6',
           title: 'text-2xl font-medium tracking-tight text-white sm:text-3xl text-center lg:text-left',
         }"
@@ -243,7 +242,7 @@ watch(projectsSectionVisible, () => {
         <div v-if="mod" class="flex flex-col items-center justify-center gap-8 sm:flex-row lg:gap-16">
           <NuxtLink class="group text-center" to="https://npmjs.org/package/@nuxt/devtools" target="_blank">
             <p
-              class="group-hover:text-primary-500 dark:group-hover:text-primary-400 text-6xl font-semibold text-gray-900 dark:text-white"
+              class="group-hover:text-primary-500 dark:group-hover:text-primary-400 text-6xl text-gray-900 font-semibold dark:text-white"
             >
               {{ formatNumber(mod.stats.downloads) }}+
             </p>
@@ -252,7 +251,7 @@ watch(projectsSectionVisible, () => {
 
           <NuxtLink class="group text-center" to="https://github.com/nuxt/devtools" target="_blank">
             <p
-              class="group-hover:text-primary-500 dark:group-hover:text-primary-400 text-6xl font-semibold text-gray-900 dark:text-white"
+              class="group-hover:text-primary-500 dark:group-hover:text-primary-400 text-6xl text-gray-900 font-semibold dark:text-white"
             >
               {{ formatNumber(mod.stats.stars) }}+
             </p>
@@ -301,7 +300,7 @@ watch(projectsSectionVisible, () => {
   top: 25vh;
   width: 100%;
   height: 30vh;
-  background: radial-gradient(50% 50% at 50% 50%, #00DC82 0%, rgba(0, 220, 130, 0) 100%);
+  background: radial-gradient(50% 50% at 50% 50%, #00dc82 0%, rgba(0, 220, 130, 0) 100%);
   filter: blur(180px);
   opacity: 0.6;
   z-index: -1;
@@ -310,7 +309,7 @@ watch(projectsSectionVisible, () => {
 .prose {
   @apply text-white;
 
-  :where(code) {
+  :where(:deep(code)) {
     @apply text-gray-200;
   }
 }

@@ -1,5 +1,5 @@
-import type { Ref } from 'vue'
 import { computed, getCurrentInstance, getCurrentScope, onMounted, onScopeDispose, ref, toValue, watch } from 'vue'
+import type { Ref } from 'vue'
 
 export function useObjectStorage<T>(key: string, initial: T, listenToStorage = true): Ref<T> {
   const raw = localStorage.getItem(key)
@@ -46,7 +46,8 @@ export function useTransform<F, T>(data: Ref<F>, to: (data: F) => T, from: (data
 
 export function useEventListener(target: EventTarget, type: string, listener: any, options?: boolean | AddEventListenerOptions) {
   target.addEventListener(type, listener, options)
-  getCurrentScope() && onScopeDispose(() => target.removeEventListener(type, listener, options))
+  if (getCurrentScope())
+    onScopeDispose(() => target.removeEventListener(type, listener, options))
 }
 
 /**
@@ -108,16 +109,19 @@ export function useElementBounding(target: Ref<HTMLElement | null | undefined>) 
       cleanup()
       if (window) {
         observer = new ResizeObserver(update)
-        el && observer!.observe(el)
+        if (el)
+          observer!.observe(el)
       }
     },
     { immediate: true, flush: 'post', deep: true },
   )
 
-  getCurrentScope() && onScopeDispose(() => {
-    cleanup()
-    stopWatch()
-  })
+  if (getCurrentScope()) {
+    onScopeDispose(() => {
+      cleanup()
+      stopWatch()
+    })
+  }
 
   return {
     height,

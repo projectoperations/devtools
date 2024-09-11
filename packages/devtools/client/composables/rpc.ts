@@ -1,8 +1,8 @@
 import { createBirpc } from 'birpc'
 import { parse, stringify } from 'flatted'
 import { tryCreateHotContext } from 'vite-hot-client'
-import type { ClientFunctions, ServerFunctions } from '../../src/types'
 import { WS_EVENT_NAME } from '../../src/constant'
+import type { ClientFunctions, ServerFunctions } from '../../src/types'
 
 export const wsConnecting = ref(false)
 export const wsError = ref<any>()
@@ -47,12 +47,12 @@ async function connectVite() {
     base += '/'
   const current = window.location.href.replace(/\/__nuxt_devtools__\/client\/.*$/, '/')
   const hot = await tryCreateHotContext(undefined, Array.from(new Set([
-    current,
-    `${current}${buildAssetsDir}/`,
-    `${current}_nuxt/`,
-    base,
     `${base}${buildAssetsDir}/`,
     `${base}_nuxt/`,
+    base,
+    `${current}${buildAssetsDir}/`,
+    `${current}_nuxt/`,
+    current,
   ])))
 
   if (!hot) {

@@ -1,9 +1,9 @@
 import { defineNuxtModule } from '@nuxt/kit'
-import Markdown from 'unplugin-vue-markdown/vite'
 import LinkAttributes from 'markdown-it-link-attributes'
-import type { BuiltinLanguage } from 'shikiji'
-import { getHighlighter } from 'shikiji'
-import { bundledLanguages } from 'shikiji/langs'
+import { createHighlighter } from 'shiki'
+import { bundledLanguages } from 'shiki/langs'
+import Markdown from 'unplugin-vue-markdown/vite'
+import type { BuiltinLanguage } from 'shiki'
 
 export default defineNuxtModule({
   async setup(_, nuxt) {
@@ -32,7 +32,7 @@ export default defineNuxtModule({
               },
             })
 
-            const highlighter = await getHighlighter({
+            const highlighter = await createHighlighter({
               themes: [
                 'vitesse-dark',
                 'vitesse-light',

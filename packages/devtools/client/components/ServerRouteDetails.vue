@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { createReusableTemplate, watchDebounced } from '@vueuse/core'
 import JsonEditorVue from 'json-editor-vue'
-import { createReusableTemplate } from '@vueuse/core'
-import type { $Fetch } from 'ofetch'
 import type { CodeSnippet, ServerRouteInfo, ServerRouteInput } from '~/../src/types'
+import type { $Fetch } from 'ofetch'
 
 const props = defineProps<{
   route: ServerRouteInfo
@@ -14,6 +14,7 @@ const emit = defineEmits<{
 
 const [DefineDefaultInputs, UseDefaultInputs] = createReusableTemplate()
 
+const colorMode = getColorMode()
 const config = useServerConfig()
 const client = useClient()
 
@@ -58,7 +59,7 @@ const started = ref(false)
 
 const openInEditor = useOpenInEditor()
 
-const parsedRoute = computed(() => props.route.route?.split(/((?:\*\*)?:[\w_]+)/g))
+const parsedRoute = computed(() => props.route.route?.split(/((?:\*\*)?:\w+)/g))
 const paramNames = computed(() => parsedRoute.value?.filter(i => i.startsWith(':') || i.startsWith('**:')) || [])
 
 const routeMethod = ref(props.route.method || 'GET')
@@ -68,7 +69,7 @@ const routeInputs = reactive({
   body: [{ active: true, key: '', value: '', type: 'string' }] as ServerRouteInput[],
   headers: [{ active: true, key: 'Content-Type', value: 'application/json', type: 'string' }] as ServerRouteInput[],
 })
-const routeInputBodyJSON = ref({})
+const routeInputBodyJSON = ref<any>({})
 const {
   inputDefaults,
   sendFrom,
@@ -85,7 +86,7 @@ const methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD']
 const bodyPayloadMethods = ['PATCH', 'POST', 'PUT', 'DELETE']
 const hasBody = computed(() => bodyPayloadMethods.includes(routeMethod.value.toUpperCase()))
 
-const activeTab = ref(paramNames.value.length ? 'params' : 'query')
+const activeTab = ref()
 
 const tabInputs = ['input', 'json']
 const selectedTabInput = ref(tabInputs[0])
@@ -190,9 +191,7 @@ async function fetchData() {
       },
     })
   }
-  catch (err: any) {
-
-  }
+  catch {}
 
   fetching.value = false
   response.fetchTime = Date.now() - start
@@ -204,7 +203,8 @@ const codeSnippets = computed(() => {
   const items: string[] = []
   const headers = Object.entries(parsedHeader.value)
     .filter(([key, value]) => key && value && !(key === 'Content-Type' && value === 'application/json'))
-    .map(([key, value]) => `  '${key}': '${value}'`).join(',\n')
+    .map(([key, value]) => `  '${key}': '${value}'`)
+    .join(',\n')
 
   if (routeMethod.value.toUpperCase() !== 'GET')
     items.push(`method: '${routeMethod.value.toUpperCase()}'`)
@@ -308,6 +308,50 @@ watchEffect(() => {
   }
 })
 
+const savedRouteInputs = useLocalStorage<{ path: string, tab: string, inputs: any }[]>('nuxt-devtools:server-routes:inputs', () => [], {
+  window: window.parent,
+})
+
+watchDebounced([routeInputs, activeTab], () => {
+  const savedEntry = savedRouteInputs.value?.find((entry: any) => entry.path === props.route.filepath)
+
+  if (!savedEntry) {
+    const newEntry = {
+      path: props.route.filepath,
+      tab: paramNames.value.length ? 'params' : 'query',
+      inputs: {
+        ...routeInputs,
+        ...(paramNames.value.length ? { params: routeParams.value } : {}),
+      },
+    }
+    savedRouteInputs.value.push(newEntry)
+
+    if (!activeTab.value)
+      activeTab.value = newEntry.tab
+  }
+  else {
+    if (!activeTab.value)
+      activeTab.value = savedEntry.tab
+
+    if (savedEntry.tab !== activeTab.value)
+      savedEntry.tab = activeTab.value
+
+    //  update routeInputs with local storage
+    const { body, query, headers, params } = savedEntry.inputs
+    Object.assign(routeInputs, { body, query, headers })
+    routeParams.value = params
+  }
+}, { immediate: true, deep: true, debounce: 500 })
+
+function clearSavedCache() {
+  savedRouteInputs.value = []
+  routeInputs.body = []
+  routeInputs.query = []
+  routeInputs.headers = []
+  routeParams.value = {}
+  activeTab.value = paramNames.value.length ? 'params' : 'query'
+}
+
 const copy = useCopy()
 </script>
 
@@ -369,15 +413,18 @@ const copy = useCopy()
       <NButton
         v-for="tab of tabs"
         :key="tab.slug"
+        v-tooltip="tab.name"
         :class="activeTab === tab.slug ? 'text-primary n-primary' : 'border-transparent shadow-none'"
         @click="activeTab = tab.slug"
       >
         <NIcon :icon="ServerRouteTabIcons[tab.slug]" />
-        {{ tab.name }}
-        {{ tab?.length ? `(${tab.length})` : '' }}
-        <span>
-          {{ inputDefaults[tab.slug]?.length ? `(${inputDefaults[tab.slug].length})` : '' }}
-        </span>
+        <div class="hidden md:block">
+          {{ tab.name }}
+          {{ tab?.length ? `(${tab.length})` : '' }}
+          <span>
+            {{ inputDefaults[tab.slug]?.length ? `(${inputDefaults[tab.slug].length})` : '' }}
+          </span>
+        </div>
       </NButton>
       <div flex-auto />
       <div text-xs op50>
@@ -395,6 +442,7 @@ const copy = useCopy()
           DevTools
         </option>
       </NSelect>
+      <NButton v-tooltip="'Clear Inputs Saved Cache'" n="orange" class="p-3" icon="i-carbon-clean" @click="clearSavedCache" />
     </div>
     <div
       v-if="activeTab === 'params'"
@@ -426,7 +474,7 @@ const copy = useCopy()
           placeholder="Value..."
           :model-value="cookie.value"
           flex-1 n="primary"
-          @input="updateCookie(cookie.key, $event.target?.value)"
+          @input="updateCookie(cookie.key, ($event as any).target?.value)"
         />
         <NButton title="Delete" n="red" @click="updateCookie(cookie.key, undefined)">
           <NIcon icon="i-carbon-trash-can" />
@@ -492,12 +540,17 @@ const copy = useCopy()
         </div>
 
         <UseDefaultInputs v-if="selectedTabInput === 'input'" />
+        <!-- TODO: Mode does not have correct type, remove when upstream fixes -->
         <JsonEditorVue
           v-else-if="selectedTabInput === 'json'"
           v-model="routeInputBodyJSON"
-          :class="[$colorMode.value === 'dark' ? 'jse-theme-dark' : 'light']"
+          :class="colorMode === 'dark' ? 'jse-theme-dark' : 'light'"
           class="json-editor-vue of-auto text-sm outline-none"
-          v-bind="$attrs" mode="text" :navigation-bar="false" :indentation="2" :tab-size="2"
+          v-bind="$attrs"
+          :mode="('text' as any)"
+          :navigation-bar="false"
+          :indentation="2"
+          :tab-size="2"
         />
       </template>
       <UseDefaultInputs v-else />

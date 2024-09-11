@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, watchEffect } from 'vue'
+import type { NuxtDevtoolsHostClient } from '@nuxt/devtools/types'
 import type { CSSProperties } from 'vue'
-import type { NuxtDevtoolsHostClient } from '../../../types'
 import { settings } from '../../settings'
+import FrameBox from './FrameBox.vue'
 import { state } from './state'
 import { millisecondToHumanreadable, useElementBounding, useEventListener, useScreenSafeArea } from './utils'
-import FrameBox from './FrameBox.vue'
 
 const props = defineProps<{
   client: NuxtDevtoolsHostClient
@@ -240,7 +240,7 @@ const panelStyle = computed(() => {
 const { width: frameWidth, height: frameHeight } = useElementBounding(frameBox)
 
 const iframeStyle = computed(() => {
-  // eslint-disable-next-line no-unused-expressions, no-sequences
+  // eslint-disable-next-line no-sequences, ts/no-unused-expressions
   mousePosition.x, mousePosition.y
 
   const halfHeight = (panelEl.value?.clientHeight || 0) / 2
@@ -404,7 +404,11 @@ onMounted(() => {
       </template>
     </div>
 
-    <div ref="frameBox" :style="iframeStyle">
+    <div
+      v-show="!client.inspector?.isEnabled.value"
+      ref="frameBox"
+      :style="iframeStyle"
+    >
       <FrameBox
         :client="client"
         :is-dragging="isDragging"
@@ -495,7 +499,12 @@ onMounted(() => {
   user-select: none;
   touch-action: none;
   max-width: 150px;
-  transition: all 0.6s ease, max-width 0.6s ease, padding 0.5s ease, transform 0.4s ease, opacity 0.2s ease;
+  transition:
+    all 0.6s ease,
+    max-width 0.6s ease,
+    padding 0.5s ease,
+    transform 0.4s ease,
+    opacity 0.2s ease;
 }
 
 #nuxt-devtools-anchor.nuxt-devtools-hide .nuxt-devtools-panel {
@@ -547,7 +556,13 @@ onMounted(() => {
   pointer-events: none;
   z-index: -1;
   border-radius: 9999px;
-  background-image: linear-gradient(45deg,#00dc82,#36e4da,#0047e1);
+  background-image: linear-gradient(45deg, #00dc82, #00dc82, #00dc82);
   filter: blur(60px);
+}
+
+@media print {
+  #nuxt-devtools-anchor {
+    display: none;
+  }
 }
 </style>

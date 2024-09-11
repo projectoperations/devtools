@@ -17,7 +17,7 @@ const counter = ref(0)
 const head = useClientHead()
 
 const headTags = computedAsync(async () => {
-  // eslint-disable-next-line no-unused-expressions
+  // eslint-disable-next-line ts/no-unused-expressions
   counter.value // for force refresh
   const tags = await head.value?.resolveTags()
   return tags.map((tag): NormalizedHeadTag => {
@@ -93,7 +93,7 @@ until(router).toBeTruthy().then((v) => {
 </script>
 
 <template>
-  <div flex="~ col lg:row" h-full w-full of-hidden>
+  <div grid="~ lg:cols-2" h-full w-full of-hidden>
     <div flex-auto of-auto>
       <NNavbar>
         <template #search>
@@ -157,7 +157,7 @@ until(router).toBeTruthy().then((v) => {
                 </NLink>
               </div>
               <NLink
-                :href="item.value.match(/^https?:\/\//) ? item.value : undefined"
+                :href="String(item.value).match(/^https?:\/\//) ? item.value : undefined"
                 target="_blank"
                 w-full p2 font-mono
                 n="primary"

@@ -1,10 +1,10 @@
-import { addVitePlugin } from '@nuxt/kit'
-import type { ViteInspectAPI } from 'vite-plugin-inspect'
-import Inspect from 'vite-plugin-inspect'
 import { addCustomTab } from '@nuxt/devtools-kit'
+import { addVitePlugin } from '@nuxt/kit'
+import Inspect from 'vite-plugin-inspect'
+import type { ViteInspectAPI } from 'vite-plugin-inspect'
 import type { NuxtDevtoolsServerContext } from '../types'
 
-export async function setup({ nuxt, rpc }: NuxtDevtoolsServerContext) {
+export function setup({ nuxt, rpc }: NuxtDevtoolsServerContext) {
   const plugin = Inspect()
   addVitePlugin(plugin)
 
@@ -21,7 +21,7 @@ export async function setup({ nuxt, rpc }: NuxtDevtoolsServerContext) {
     category: 'advanced',
     view: {
       type: 'iframe',
-      src: `${nuxt.options.app.baseURL}/_nuxt/__inspect/`.replace(/\/\//g, '/'),
+      src: `${nuxt.options.app.baseURL}${nuxt.options.app.buildAssetsDir}/__inspect/`.replace(/\/\//g, '/'),
     },
   }), nuxt)
 
@@ -29,7 +29,7 @@ export async function setup({ nuxt, rpc }: NuxtDevtoolsServerContext) {
     const modules = (await api?.rpc.list())?.modules || []
     const components = await rpc.functions.getComponents() || []
     const vueModules = modules.filter((m) => {
-      const plainId = m.id.replace(/\?v=[\w\d]+$/, '')
+      const plainId = m.id.replace(/\?v=\w+$/, '')
       if (components.some(c => c.filePath === plainId))
         return true
       return m.id.match(/\.vue($|\?v=)/)

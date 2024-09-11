@@ -1,14 +1,15 @@
 import type { NuxtDevtoolsServerContext } from '../types'
 
-export async function setup({ nuxt }: NuxtDevtoolsServerContext) {
-  if (!nuxt.options.dev)
+export function setup({ nuxt }: NuxtDevtoolsServerContext) {
+  if (!nuxt.options.dev || nuxt.options.test)
     return
 
   /**
    * Wrap plugins with performance metrics
    */
   nuxt.hook('app:templates', (app) => {
-    app.templates.filter(i => i.filename?.startsWith('plugins/'))
+    app.templates
+      .filter(i => i.filename?.startsWith('plugins/'))
       .forEach((i) => {
         if (!i.getContents)
           return
@@ -56,13 +57,12 @@ function ${WRAPPER_KEY} (plugin, src) {
             .map(([, name, path]) => ({ name, path }))
 
           content = content.replace(/\nexport default\s*\[([\s\S]*)\]/, (_, itemsRaw: string) => {
-            const items = itemsRaw.split(',').map(i => i.trim())
-              .map((i) => {
-                const importItem = imports.find(({ name }) => name === i)
-                if (!importItem)
-                  return i
-                return `${WRAPPER_KEY}(${i}, ${JSON.stringify(importItem.path)})`
-              })
+            const items = itemsRaw.split(',').map(i => i.trim()).map((i) => {
+              const importItem = imports.find(({ name }) => name === i)
+              if (!importItem)
+                return i
+              return `${WRAPPER_KEY}(${i}, ${JSON.stringify(importItem.path)})`
+            })
             return `\n${snippets}\nexport default [\n${items.join(',\n')}\n]\n`
           })
 

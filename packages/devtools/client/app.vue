@@ -1,12 +1,16 @@
 <script setup lang="ts">
+import { useEyeDropper } from '@vueuse/core'
+import { splitScreenAvailable } from '~/composables/storage'
+import { setupClientRPC } from './setup/client-rpc'
+import { setupVueDevTools } from './setup/vue-devtools'
+
 import 'floating-vue/dist/style.css'
+import '@vue/devtools-applet/style.css'
 import 'vanilla-jsoneditor/themes/jse-theme-dark.css'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 import './styles/global.css'
-import { setupClientRPC } from './setup/client-rpc'
-import { splitScreenAvailable } from '~/composables/storage'
 
-if (process.client)
+if (import.meta.client)
   import('./setup/unocss-runtime')
 
 useHead({
@@ -26,11 +30,12 @@ useHead({
   ],
 })
 
+setupVueDevTools()
 setupClientRPC()
 
 const client = useClient()
 const route = useRoute()
-const colorMode = useColorMode()
+const colorMode = getColorMode()
 const isUtilityView = computed(() => route.path.startsWith('/__') || route.path === '/')
 const waiting = computed(() => !client.value && !showConnectionWarning.value)
 
@@ -43,7 +48,7 @@ watch(
   { immediate: true },
 )
 
-addEventListener('keydown', (e) => {
+useEventListener('keydown', (e) => {
   if (e.code === 'KeyD' && e.altKey) {
     client.value?.devtools.close()
     e.preventDefault()
@@ -72,19 +77,47 @@ onMounted(async () => {
   }
 })
 
-registerCommands(() =>
-  splitScreenAvailable.value
-    ? [
-        {
-          id: 'action:split-screen',
-          title: `${splitScreenEnabled.value ? 'Close' : 'Open'} Split Screen`,
-          icon: 'i-carbon-split-screen',
-          action: () => {
-            splitScreenEnabled.value = !splitScreenEnabled.value
-          },
+const copy = useCopy()
+const eyeDropper = useEyeDropper({})
+
+registerCommands(() => [
+  ...(splitScreenAvailable.value
+    ? [{
+        id: 'action:split-screen',
+        title: `${splitScreenEnabled.value ? 'Close' : 'Open'} Split Screen`,
+        icon: 'i-carbon-split-screen',
+        action: () => {
+          splitScreenEnabled.value = !splitScreenEnabled.value
         },
-      ]
-    : [])
+      }]
+    : []),
+  ...(eyeDropper.isSupported.value
+    ? [{
+        id: 'action:eye-dropper',
+        title: 'Color Picker',
+        icon: 'i-carbon-eyedropper',
+        action: async () => {
+          const { sRGBHex } = await eyeDropper.open() || {}
+          if (sRGBHex)
+            copy(sRGBHex)
+        },
+      }]
+    : []),
+  ...[
+    {
+      id: 'action:refresh-data',
+      title: 'Refresh Data',
+      icon: 'i-carbon-data-backup',
+      action: refreshData,
+    },
+    {
+      id: 'action:reload-page',
+      title: 'Reload Page',
+      icon: 'i-carbon-reset',
+      action: reloadPage,
+    },
+  ],
+])
 </script>
 
 <template>
@@ -97,7 +130,7 @@ registerCommands(() =>
     <div
       v-else
       :class="isUtilityView ? 'flex' : sidebarExpanded ? 'grid grid-cols-[250px_1fr]' : 'grid grid-cols-[50px_1fr]'"
-      h-full h-screen of-hidden font-sans bg-base
+      h-full h-screen of-hidden rounded-xl font-sans bg-base
     >
       <SideNav v-show="!isUtilityView" of-x-hidden of-y-auto />
       <NuxtLayout>

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { Component, NuxtLayout, NuxtPage } from 'nuxt/schema'
-import type { Data, Node, Options } from 'vis-network'
 import { Network } from 'vis-network'
 import type { ComponentRelationship } from '~/../src/types'
+import type { Component, NuxtLayout, NuxtPage } from 'nuxt/schema'
+import type { Data, Node, Options } from 'vis-network'
 
 const props = defineProps<{
   components: Component[]
@@ -11,7 +11,7 @@ const props = defineProps<{
 
 const container = ref<HTMLElement>()
 const navbar = ref<HTMLElement>()
-const colorMode = useColorMode()
+const colorMode = getColorMode()
 
 const selected = ref<{
   id: string
@@ -34,6 +34,9 @@ const {
 } = useDevToolsUIOptions()
 
 const selectedFilter = ref<ComponentRelationship>()
+
+const search = ref('')
+const searchDebounced = useDebounce(search, 300)
 
 const entries = computed(() => {
   const relations = (props.relationships || [])
@@ -59,7 +62,7 @@ const data = computed<Data>(() => {
     const page = pages.value?.find(i => i.file === rel.id)
     const layout = layouts.value?.find(i => i.file === rel.id)
 
-    const path = rel.id.replace(/\?.*$/, '').replace(/\#.*$/, '')
+    const path = rel.id.replace(/\?.*$/, '').replace(/#.*$/, '')
     const group = rel.id.includes('/node_modules/')
       ? 'lib'
       : component
@@ -89,6 +92,8 @@ const data = computed<Data>(() => {
         ? 'square'
         : 'dot'
 
+    const isGrayedOut = searchDebounced.value && !rel.id.toLowerCase().includes(searchDebounced.value.toLowerCase())
+
     return {
       id: rel.id,
       label: path.split('/').splice(-1)[0].replace(/\.\w+$/, ''),
@@ -96,9 +101,9 @@ const data = computed<Data>(() => {
       shape,
       size: 15 + Math.min(rel.deps.length / 2, 8),
       font: {
-        color: colorMode.value === 'dark' ? 'white' : 'black',
+        color: isGrayedOut ? '#8885' : (colorMode.value === 'dark' ? 'white' : 'black'),
       },
-      color: selectedFilter.value?.id === rel.id ? '#82c742' : undefined,
+      color: isGrayedOut ? '#8885' : selectedFilter.value?.id === rel.id ? '#82c742' : undefined,
       // @ts-expect-error additional data
       extra: {
         id: rel.id,
@@ -200,8 +205,8 @@ function setFilter() {
 </script>
 
 <template>
-  <NNavbar ref="navbar" absolute left-0 right-0 top-0>
-    <template #search>
+  <NNavbar ref="navbar" v-model:search="search" absolute left-0 right-0 top-0>
+    <template #actions>
       <div flex="~ gap-4 wrap" w-full>
         <NCheckbox v-model="showPages" n="primary sm">
           <span op75>Show pages</span>

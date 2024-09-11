@@ -1,7 +1,7 @@
 {
   "name": "@nuxt/devtools-wizard",
   "type": "module",
-  "version": "1.0.4",
+  "version": "1.4.2",
   "description": "CLI Wizard to toggle Nuxt DevTools",
   "license": "MIT",
   "homepage": "https://devtools.nuxt.com",
@@ -22,23 +22,23 @@
     "build": "unbuild",
     "stub": "unbuild --stub",
     "dev:prepare": "nr stub",
-    "prepublishOnly": "pnpm build"
+    "prepack": "pnpm build"
   },
   "dependencies": {
-    "consola": "^3.2.3",
-    "diff": "^5.1.0",
-    "execa": "^7.2.0",
-    "global-directory": "^4.0.1",
-    "magicast": "^0.3.2",
-    "pathe": "^1.1.1",
-    "pkg-types": "^1.0.3",
-    "prompts": "^2.4.2",
-    "rc9": "^2.1.1",
-    "semver": "^7.5.4"
+    "consola": "catalog:",
+    "diff": "catalog:",
+    "execa": "catalog:",
+    "global-directory": "catalog:",
+    "magicast": "catalog:",
+    "pathe": "catalog:",
+    "pkg-types": "catalog:",
+    "prompts": "catalog:",
+    "rc9": "catalog:",
+    "semver": "catalog:"
   },
   "devDependencies": {
-    "@types/diff": "^5.0.8",
-    "@types/prompts": "^2.4.9",
-    "unbuild": "^2.0.0"
+    "@types/diff": "catalog:",
+    "@types/prompts": "catalog:",
+    "unbuild": "catalog:"
   }
 }

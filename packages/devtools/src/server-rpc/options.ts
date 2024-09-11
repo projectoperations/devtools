@@ -1,6 +1,6 @@
-import type { NuxtDevToolsOptions, NuxtDevtoolsServerContext, ServerFunctions } from '../types'
-import { clearLocalOptions, readLocalOptions, writeLocalOptions } from '../utils/local-options'
 import { defaultTabOptions } from '../constant'
+import { clearLocalOptions, readLocalOptions, writeLocalOptions } from '../utils/local-options'
+import type { NuxtDevToolsOptions, NuxtDevtoolsServerContext, ServerFunctions } from '../types'
 
 let options: NuxtDevToolsOptions | undefined
 
@@ -48,7 +48,7 @@ export function setupOptionsRPC({ nuxt }: NuxtDevtoolsServerContext) {
       )
       nuxt.callHook('builder:generateApp', {
         filter(template) {
-          return template.filename.includes('devtools/settings.mjs')
+          return template.filename.includes('devtools/settings.js')
         },
       })
     },
